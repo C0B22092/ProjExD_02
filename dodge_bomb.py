@@ -3,7 +3,7 @@ import sys
 
 import pygame as pg
 
-delta = {
+delta = {  # 矢印キーの定義
     pg.K_UP: (0, -1),
     pg.K_DOWN: (0, +1),
     pg.K_LEFT: (-1, 0),
@@ -33,12 +33,13 @@ def main():
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 900, 400
+    accs = [a for a in range(1, 11)]  # 加速度のリスト
 
     bb_img = pg.Surface((20, 20))  # 正方形surface作成
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # 赤い円を描画
     bb_img.set_colorkey((0, 0, 0))  # 黒を透過
     x, y = random.randint(0, 1600), random.randint(0, 900)  # 乱数生成
-    vx, vy= +1, +1
+    vx, vy= +1, +1  # 横、縦方向の速度
     bb_rct = bb_img.get_rect()
     bb_rct.center = (x, y)
     tmr = 0
@@ -51,7 +52,7 @@ def main():
         tmr += 1
 
         key_lst = pg.key.get_pressed()
-        for k, mv in delta.items():
+        for k, mv in delta.items():  # キーを押された処理
             if key_lst[k]:
                 kk_rct.move_ip(mv)
         if check_bound(screen.get_rect(), kk_rct) != (True, True):
@@ -61,14 +62,18 @@ def main():
 
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)
-        bb_rct.move_ip(vx, vy)
+        avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
+        bb_rct.move_ip(avx, avy)
         yoko, tate = check_bound(screen.get_rect(), bb_rct)
+        
+
         if not yoko:  # 横方向にはみ出ていたら
             vx *= -1
         if not tate:  # 縦方向にはみ出ていたら
             vy *= -1
+        
         screen.blit(bb_img, bb_rct)
-        if kk_rct.colliderect(bb_rct):
+        if kk_rct.colliderect(bb_rct):  # 爆弾と衝突した処理
             return
 
         pg.display.update()
