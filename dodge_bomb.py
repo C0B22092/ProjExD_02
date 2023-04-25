@@ -1,5 +1,7 @@
-import pygame as pg
+import random
 import sys
+
+import pygame as pg
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -8,6 +10,10 @@ def main():
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
+    bb_img = pg.Surface((20, 20))  # 正方形surface作成
+    pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # 赤い円を描画
+    bb_img.set_colorkey((0, 0, 0))  # 黒を透過
+    x, y = random.randint(0, 1600), random.randint(0, 900)
     tmr = 0
 
     while True:
@@ -18,6 +24,7 @@ def main():
         tmr += 1
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, [900, 400])
+        screen.blit(bb_img, [x, y])
 
         pg.display.update()
         clock.tick(1000)
