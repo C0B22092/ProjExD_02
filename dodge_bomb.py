@@ -30,7 +30,10 @@ def main():
     clock = pg.time.Clock()
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
+    kn_img = pg.image.load("ex02/fig/8.png")  # 泣きこうかとん
+    kn_img = pg.transform.rotozoom(kn_img, 0, 2.0)
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
+    kk_imgs = [kk_img, kn_img]
     kk_rct = kk_img.get_rect()
     kk_rct.center = 900, 400
     accs = [a for a in range(1, 11)]  # 加速度のリスト
@@ -61,7 +64,7 @@ def main():
                     kk_rct.move_ip(-mv[0], -mv[1])
 
         screen.blit(bg_img, [0, 0])
-        screen.blit(kk_img, kk_rct)
+        screen.blit(kk_imgs[0], kk_rct)
         avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
         bb_rct.move_ip(avx, avy)
         yoko, tate = check_bound(screen.get_rect(), bb_rct)
@@ -74,6 +77,8 @@ def main():
         
         screen.blit(bb_img, bb_rct)
         if kk_rct.colliderect(bb_rct):  # 爆弾と衝突した処理
+            screen.blit(kk_imgs[1], kk_rct)
+            pg.time.wait(5000)
             return
 
         pg.display.update()
